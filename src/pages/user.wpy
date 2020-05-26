@@ -9,5 +9,5 @@
 <script>
     import wepy from '@wepy/core'
 
-    export default class User extends wepy.page{}
+    wepy.page({})
 </script>
