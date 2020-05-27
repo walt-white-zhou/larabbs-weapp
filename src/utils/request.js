@@ -1,37 +1,37 @@
 import wepy from '@wepy/core'
 import store from '@/store'
 
-//服务器接口地址
+// 服务器接口地址
 const host = 'http://larabbs.test/api/v1/'
 
-//普通请求
+// 普通请求
 const request = async (url, options = {}, showLoading = true) => {
-  //显示加载中
+  // 显示加载中
   if (showLoading) {
-    wx.showLoading({'title': '加载中'})
+    wx.showLoading({title: '加载中'})
   }
-  //拼接请求地址
+  // 拼接请求地址
   options.url = host + url
 
-  let response = await wepy.wx.request(options)
+  const response = await wepy.wx.request(options)
 
   if (showLoading) {
-    //隐藏加载中
+    // 隐藏加载中
     wx.hideLoading()
   }
 
-  if (response.statusCode >= 201 && response.statusCode < 300) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
     return response
   }
 
   if (response.statusCode === 429) {
     wx.showModal({
-      'title': '提示',
-      'content': '请求太频繁，请求后再试'
+      title: '提示',
+      content: '请求太频繁，请稍后再试'
     })
   }
 
-  if (response.statusCode === 5000) {
+  if (response.statusCode === 500) {
     wx.showModal({
       title: '提示',
       content: '服务器错误，请联系管理员或重试'

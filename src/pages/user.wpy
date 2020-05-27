@@ -18,7 +18,11 @@
     </div>
   </div>
 </template>
-
+<config>
+  {
+  navigationBarTitleText: '我的',
+  }
+</config>
 <script>
   import wepy from '@wepy/core'
   import store from '@/store'
@@ -26,18 +30,16 @@
 
   wepy.page({
     store,
-    config: {
-      navigationBarTitleText: '我的'
-    },
     computed: {
-      ...mapGetters(['isLoggedIn'])
+      ...mapGetters(['user', 'isLoggedIn'])
     },
     methods: {
       // 退出
-      async logout () {
+      async logout() {
         try {
           await this.$store.dispatch('logout')
-        } catch (err) {}
+        } catch (err) {
+        }
       }
     }
   })

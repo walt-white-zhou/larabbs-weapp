@@ -3,8 +3,9 @@ export function getUser() {
 }
 
 export function setUser(user, perms) {
-  return wx.getStorageSync('user', user)
+  return wx.setStorageSync('user', user)
 }
+
 
 export function getToken() {
   return wx.getStorageSync('access_token')

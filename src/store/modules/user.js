@@ -1,30 +1,39 @@
 import wepy from '@wepy/core'
-import {login, refresh} from '@/api/auth'
+import { login, logout, refresh, register } from '@/api/auth'
+import { getCurrentUser, updateUser } from '@/api/user'
 import * as auth from '@/utils/auth'
 import isEmpty from 'lodash/isEmpty'
-import {getCurrentUser} from '@/api/user'
 
 const getDefaultState = () => {
   return {
     user: auth.getUser(),
     accessToken: auth.getToken(),
-    accessTokenExpiredAt: auth.getTokenExpiredAt()
+    accessTokenExpiredAt: auth.getTokenExpiredAt(),
   }
 }
 
 const state = getDefaultState()
 
-//定义getters
-var getters = {
+// 定义 getters
+const getters = {
   isLoggedIn: state => !isEmpty(state.accessToken),
   user: state => state.user,
   accessToken: state => state.accessToken,
-  accessTokenExpiredAt: state => state.accessTokenExpiredAt
+  accessTokenExpiredAt: state => state.accessTokenExpiredAt,
+  perms: state => state.perms
 }
 
-//定义actions
+// 定义 actions
 const actions = {
-  async login({dispatch, commit}, params = {}) {
+  async register ({ dispatch }, params = {}) {
+    const loginData = await wepy.wx.login()
+    params.code = loginData.code
+
+    await register(params)
+
+    await dispatch('login')
+  },
+  async login ({ dispatch, commit }, params = {}) {
     const loginData = await wepy.wx.login()
     params.code = loginData.code
 
@@ -40,6 +49,7 @@ const actions = {
 
     commit('setUser', userResponse.data)
     auth.setUser(userResponse.data)
+
   },
   async refresh ({ dispatch, commit, state }, params = {}) {
     const refreshResponse = await refresh(state.accessToken, {}, false)
@@ -55,16 +65,23 @@ const actions = {
     // 清空 storage
     auth.logout()
     commit('resetState')
+  },
+  async updateUser ({ commit }, params = {}) {
+
+    const editResponse = await updateUser(params)
+
+    commit('setUser', editResponse.data)
+    auth.setUser(editResponse.data)
   }
 }
 
-//定义mutations
+// 定义 mutations
 const mutations = {
   setUser(state, user) {
     state.user = user
   },
   setToken(state, tokenPayload) {
-    state.accessToken = tokenPayload.accessToken
+    state.accessToken = tokenPayload.access_token
     state.accessTokenExpiredAt = new Date().getTime() + tokenPayload.expires_in * 1000
   },
   resetState: (state) => {
