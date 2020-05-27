@@ -1,3 +1,5 @@
+import {request} from './request'
+
 export function getUser() {
   return wx.getStorageSync('user')
 }
@@ -5,7 +7,6 @@ export function getUser() {
 export function setUser(user, perms) {
   return wx.setStorageSync('user', user)
 }
-
 
 export function getToken() {
   return wx.getStorageSync('access_token')
@@ -26,3 +27,4 @@ export function setToken(tokenPayload) {
 export function logout() {
   return wx.clearStorage()
 }
+
