@@ -25,15 +25,15 @@
     <div class="page__bd">
       <div class="weui-cells weui-cell_after-title">
         <!--        已登录-->
-        <a class="weui-cell weui-cell_access" v-if="isLoggedIn" url>
+        <a class="weui-cell weui-cell_access" v-if="isLoggedIn" url="/pages/users/edit">
           <div class="weui-cell__hd avatar-wrap">
-            <image class="avatar" :src="user.avatar"></image>
+            <image class="avatar" :src="user.avatar"/>
           </div>
           <div class="weui-cell__bd">
             <div>{{ user.name }}</div>
             <div class="page__desc">{{ user.introduction || '' }}</div>
           </div>
-          <div class="weui-cell_ft weui-cell__ft_in-access"></div>
+          <div class="weui-cell__ft weui-cell__ft_in-access"></div>
         </a>
         <!--未登录-->
         <a class="weui-cell weui-cell_access" v-else url="/pages/auth/login">
