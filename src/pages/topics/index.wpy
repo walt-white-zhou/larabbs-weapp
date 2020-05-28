@@ -121,9 +121,7 @@
               <div class="weui-badge reply-count">{{ topic.reply_count }}</div>
             </a>
           </div>
-          <div class="weui-loadmore weui-loadmore_line" v-if="noMoreData">
-            <div class="weui-loadmore__tips weui-loadmore__tips_in-line">没有更多数据</div>
-          </div>
+          <topic-list :topics="topics" :no-more-data ="noMoreData"></topic-list>
         </div>
       </div>
     </div>
@@ -133,7 +131,7 @@
   {
   enablePullDownRefresh: true,
   usingComponents: {
-  "datetime-diff": "~@/components/datetime-diff"
+  "topic-list": "~@/components/topic-list"
   }
   }
 </config>

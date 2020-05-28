@@ -12,6 +12,12 @@ export function getCategories(data) {
 
 export function getTopic(id, data) {
   return request('topics/' + id, {
-    data:data
+    data: data
+  })
+}
+
+export function getUserTopics(userId, data) {
+  return request('users/'+userId+'/topics', {
+    data: data
   })
 }
