@@ -2,19 +2,37 @@
   .introduction {
     height: 3.3em;
   }
+
   .error-message {
     color: #E64340;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    display: block;
+    border-radius: 50%;
+  }
+
+  .avatar-wrap {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
 <template>
   <div class="page">
     <div class="page__bd">
+      <div class="avatar-wrap">
+        <image class="avatar" :src="form.avatar" @tap="uploadAvatar"></image>
+      </div>
       <!-- 填写姓名 -->
       <div class="weui-cells__title" :class="{'weui-cell_warn': errors.name}">姓名</div>
       <div class="weui-cells weui-cells_after-title">
         <div class="weui-cell weui-cell_input" :class="{'weui-cell_warn': errors.name}">
           <div class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入姓名" name="name" v-model="form.name" />
+            <input class="weui-input" placeholder="请输入姓名" name="name" v-model="form.name"/>
           </div>
           <div v-if="errors.name" class="weui-cell__ft">
             <icon type="warn" size="23" color="#E64340"></icon>
@@ -29,7 +47,7 @@
       <div class="weui-cells weui-cells_after-title">
         <div class="weui-cell weui-cell_input" :class="{'weui-cell_warn': errors.email}">
           <div class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入邮箱" name="email" v-model="form.email" />
+            <input class="weui-input" placeholder="请输入邮箱" name="email" v-model="form.email"/>
           </div>
           <div v-if="errors.email" class="weui-cell__ft">
             <icon type="warn" size="23" color="#E64340"></icon>
@@ -44,7 +62,8 @@
       <div class="weui-cells weui-cells_after-title" :class="{'weui-cell_warn': errors.introduction}">
         <div class="weui-cell">
           <div class="weui-cell__bd">
-            <textarea class="weui-textarea introduction" placeholder="请输入简介" name="introduction" v-model="form.introduction" />
+            <textarea class="weui-textarea introduction" placeholder="请输入简介" name="introduction"
+                      v-model="form.introduction"/>
           </div>
           <div v-if="errors.introduction" class="weui-cell__ft">
             <icon type="warn" size="23" color="#E64340"></icon>
@@ -65,8 +84,9 @@
 <script>
   import wepy from '@wepy/core'
   import store from '@/store'
-  import { mapGetters } from '@wepy/x'
+  import {mapGetters} from '@wepy/x'
   import WeValidator from 'we-validator'
+  import {updateAvatar} from '../../api/user'
 
   wepy.page({
     store,
@@ -107,11 +127,11 @@
             },
             email: {
               email: '邮箱格式不正确'
-            },
+            }
           },
           onMessage: (data) => {
             let errors = {}
-            Object.keys(data).map(function(key) {
+            Object.keys(data).map(function (key) {
               errors[key] = [data[key].msg]
             })
 
@@ -120,7 +140,7 @@
         })
       },
       // 表单提交
-      async submit () {
+      async submit() {
         this.errors = {}
         if (!this.validatorInstance.checkData(this.form)) {
           return
@@ -140,6 +160,26 @@
           if (err.response.statusCode === 422) {
             this.errors = err.response.data.errors
           }
+        }
+      },
+      async uploadAvatar() {
+        //选择头像图片
+        let image = await wepy.wx.chooseImage({count: 1})
+
+        try {
+          //获取选择的图片
+          let avatar = image.tempFilePaths[0]
+
+          //调用上传图片接口
+          let imageResponse = await updateAvatar(avatar)
+
+          //小程序上传结果没有做JSON.parse 需要手动处理
+          let responseData = JSON.parse(imageResponse.data)
+
+          this.form = Object.assign({}, this.form, {'avatar': responseData.path, 'avatar_image_id': responseData.id})
+
+        } catch (err) {
+
         }
       }
     }
