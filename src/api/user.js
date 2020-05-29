@@ -23,3 +23,7 @@ export function updateAvatar(avatar) {
   })
 }
 
+export function getUser(id) {
+  return request('users/'+id)
+}
+
