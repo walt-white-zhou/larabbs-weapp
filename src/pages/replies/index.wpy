@@ -1,6 +1,6 @@
 <template>
   <div class="page__bd">
-    <reply-list :replies="resourceData" :no-more-data="noMoreData"></reply-list>
+    <reply-list :replies="resourceData" :no-more-data ="noMoreData"></reply-list>
   </div>
 </template>
 <config>

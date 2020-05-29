@@ -8,6 +8,6 @@ export function getReplies(topicId, data) {
 
 export function getUserReplies(userId, data) {
   return request('users/' + userId + '/replies', {
-    data: data
+    data:data
   })
 }
