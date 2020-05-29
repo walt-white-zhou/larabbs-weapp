@@ -162,6 +162,10 @@
         this.noMoreData = false
         this.loadData(true)
       })
+
+      eventHub.$on('reply-created', (...args) => {
+        this.loadTopic(options.id)
+      });
     }
   })
 </script>
