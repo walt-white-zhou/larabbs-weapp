@@ -1,27 +1,4 @@
 <style lang="less">
-  .weui-media-box__info__meta {
-    margin: 0;
-    font-size: 12px;
-  }
-  .topic-info {
-    margin-top: 5px;
-  }
-  .topic-title {
-    white-space: normal;
-    font-size: 14px;
-  }
-  .avatar {
-    padding: 4px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 50px;
-    height: 50px;
-  }
-  .reply-count {
-    background-color: #d8d8d8;
-    float: right;
-  }
-
   /*分类*/
   .weui-flex {
     align-items: center;
@@ -114,18 +91,32 @@
 </config>
 <script>
   import wepy from '@wepy/core'
+  import store from '@/store'
+  import { mapGetters } from '@wepy/x'
+  import eventHub from '@/common/eventHub'
   import { getTopics, getCategories } from '@/api/topic'
   import listRefresh from '@/mixins/list-refresh.js'
-  import eventHub from '@/common/eventHub'
+  import syncBadge from '@/mixins/sync-badge'
+
   wepy.page({
-    mixins: [ listRefresh ],
+    store,
+    mixins: [ listRefresh, syncBadge ],
     data: {
       // 分类数据
       categories: [],
-      // 当前分类
+      // 当前的分类
       currentCategory: {},
-      // 分类列表是否展开
+      // 是否显示分类
       categoryOpen: false,
+    },
+    computed: {
+      ...mapGetters([ 'unreadCount']),
+      currentCategoryId() {
+        return this.currentCategory.id || null
+      },
+      currentCategoryName() {
+        return this.currentCategory.name || '话题'
+      }
     },
     async onLoad() {
       this.loadCategories()
@@ -137,18 +128,7 @@
         this.loadData(true)
       })
     },
-    computed: {
-      currentCategoryId() {
-        return this.currentCategory.id || null
-      },
-      currentCategoryName() {
-        return this.currentCategory.name || '话题'
-      }
-    },
     methods: {
-      categorisToggle() {
-        this.categoryOpen = !this.categoryOpen
-      },
       async fetchData() {
         let params = {
           page: this.page,
@@ -174,6 +154,9 @@
         }
 
         this.categories = categories
+      },
+      categorisToggle() {
+        this.categoryOpen = !this.categoryOpen
       },
       async changeCategory (category = {}) {
         this.currentCategory = category
