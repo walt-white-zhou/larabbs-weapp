@@ -96,10 +96,11 @@
   import eventHub from '@/common/eventHub'
   import { getTopics, getCategories } from '@/api/topic'
   import listRefresh from '@/mixins/list-refresh.js'
+  import syncBadge from '@/mixins/sync-badge'
 
   wepy.page({
     store,
-    mixins: [ listRefresh ],
+    mixins: [ listRefresh,syncBadge  ],
     data: {
       // 分类数据
       categories: [],
@@ -109,6 +110,7 @@
       categoryOpen: false,
     },
     computed: {
+      ...mapGetters([ 'unreadCount']),
       currentCategoryId() {
         return this.currentCategory.id || null
       },
